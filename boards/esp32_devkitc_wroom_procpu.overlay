@@ -2,6 +2,13 @@
 	chosen {
 		zephyr,display = &ssd1306;
 	};
+
+	dht11_0 {
+	compatible = "aosong,dht";
+	status = "okay";
+	dio-gpios = <&gpio1 17 GPIO_PULL_UP>;
+};
+
 };
 
 &i2c0 {
@@ -20,3 +27,4 @@
 		prechargep = <0x22>;
     };
 };
+
