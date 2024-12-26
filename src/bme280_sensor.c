@@ -70,7 +70,7 @@ int get_bme280_data(struct bme280_data *data)
     else
     {
 
-        printf("Temperature:%.1f C Humidity :%.1f %\n", temp_db, hum_db);
+        printf("Temperature:%.1f C Humidity :%.1f %% \n", temp_db, hum_db);
     }
     return 0;
 }
