@@ -13,6 +13,7 @@
 #include <string.h>
 #include <zephyr/kernel.h>
 #include <lvgl_input_device.h>
+#include "bme280_sensor.h"
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
@@ -20,10 +21,8 @@ LOG_MODULE_REGISTER(app);
 
 int main(void)
 {   
-    printk("Initializing LVGL\n");
-	char count_str[11] = {0};
 	const struct device *display_dev;
-	lv_obj_t *hello_world_label;
+	lv_obj_t *bme280_data_label;
 
 	display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 	if (!device_is_ready(display_dev)) {
@@ -31,22 +30,27 @@ int main(void)
 		return 0;
 	}
 	
-    printk("Creating Hello World Label \n");
-    hello_world_label = lv_label_create(lv_scr_act());
+    bme280_data_label = lv_label_create(lv_scr_act());
+	lv_obj_align(bme280_data_label, LV_ALIGN_CENTER, 0, 0);
+ 	lv_task_handler();	
+ 	display_blanking_off(display_dev);
 
-	lv_label_set_text(hello_world_label, "Hallo Sexy!");
-	lv_obj_align(hello_world_label, LV_ALIGN_CENTER, 0, 0);
-
-	
-    printk("lv_task_handler\n");
-	lv_task_handler();
-	
-    printk("display_blanking off\n");
-	display_blanking_off(display_dev);
-
+	if (check_bme280_device() == NULL)
+    {	
+        lv_label_set_text(bme280_data_label, "Device Error!");
+		return -1;
+    }
+	char data_str[100] = {0};
 	while (1) {
+		struct bme280_data data;
+		if(get_bme280_data(&data) == -1)
+			lv_label_set_text(bme280_data_label, "Data Error");
+		else {
+			sprintf(data_str, "%.1f C \n%.1f %%", data.temperature, data.humidity);
+			lv_label_set_text(bme280_data_label, data_str);
+		}
 		lv_task_handler();
-		k_sleep(K_MSEC(10));
-
+		k_sleep(K_MSEC(1000));
 	}
+	return 0;
 }

@@ -19,4 +19,9 @@
 		com-invdir;
 		prechargep = <0x22>;
     };
+	bme280@76 {
+		compatible = "bosch,bme280";
+		status = "okay";
+		reg = <0x76>;
+	};
 };
