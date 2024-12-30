@@ -1,0 +1,9 @@
+config WIFI_SSID
+    string "Wi-Fi SSID"
+    default "YourSSID"
+
+config WIFI_PASSWORD
+    string "Wi-Fi Password"
+    default "YourPassword"
+
+source "Kconfig.zephyr"

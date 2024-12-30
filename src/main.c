@@ -14,6 +14,7 @@
 #include <zephyr/kernel.h>
 #include <lvgl_input_device.h>
 #include "bme280_sensor.h"
+#include "wifi.h"
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
@@ -40,6 +41,8 @@ int main(void)
         lv_label_set_text(bme280_data_label, "Device Error!");
 		return -1;
     }
+
+	wifi_connect();
 	char data_str[100] = {0};
 	while (1) {
 		struct bme280_data data;
