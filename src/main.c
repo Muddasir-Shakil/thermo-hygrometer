@@ -20,6 +20,9 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app);
 
+#define WIFI_SSID CONFIG_WIFI_SSID
+#define WIFI_PASSWORD CONFIG_WIFI_PASSWORD
+
 int main(void)
 {   
 	const struct device *display_dev;
@@ -42,7 +45,11 @@ int main(void)
 		return -1;
     }
 
-	wifi_connect();
+	// start http server, user can configure
+	// check if SSID and password is set
+	wifi_connect(WIFI_SSID, WIFI_PASSWORD);
+	
+
 	char data_str[100] = {0};
 	while (1) {
 		struct bme280_data data;

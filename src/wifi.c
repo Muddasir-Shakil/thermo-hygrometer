@@ -1,6 +1,4 @@
-#include <zephyr/logging/log.h>
-
-#include <zephyr/net/wifi_mgmt.h>
+#include "wifi.h"
 
 LOG_MODULE_REGISTER(wifi);
 #define WIFI_SSID CONFIG_WIFI_SSID
@@ -31,7 +29,7 @@ static void handle_wifi_disconnect_result(struct net_mgmt_event_callback *cb)
 		LOG_ERR("Disconnection request failed (%d)", status->status);
 	} else {
 		LOG_INF("WIFI Disconnect");
-		connected = 1;
+		connected = 0;
 	}
 }
 
@@ -50,7 +48,7 @@ static void wifi_mgmt_event_handler(struct net_mgmt_event_callback *cb,
 	}
 }
 
-void wifi_connect(void)
+void wifi_connect(const char* ssid, const char* password)
 {
 	int nr_tries = 10;
 	int ret = 0;
@@ -62,21 +60,21 @@ void wifi_connect(void)
 	net_mgmt_add_event_callback(&wifi_shell_mgmt_cb);
 
 	struct net_if *iface = net_if_get_default();
-	static struct wifi_connect_req_params cnx_params = {
-		.ssid = WIFI_SSID,
+	struct wifi_connect_req_params cnx_params = {
+		.ssid = ssid,
 		.ssid_length = 0,
-		.psk = WIFI_PASSWORD,
+		.psk = password,
 		.psk_length = 0,
 		.channel = 0,
 		.security = WIFI_SECURITY_TYPE_PSK,
 	};
 
-	cnx_params.ssid_length = strlen(WIFI_SSID);
-	cnx_params.psk_length = strlen(WIFI_PASSWORD);
+	cnx_params.ssid_length = strlen(ssid);
+	cnx_params.psk_length = strlen(password);
 
 	connected = 0;
 
-	LOG_INF("WIFI try connecting to %s...", WIFI_SSID);
+	LOG_INF("WIFI try connecting to %s...", ssid);
 
 	/* Let's wait few seconds to allow wifi device be on-line */
 	while (nr_tries-- > 0) {
