@@ -25,3 +25,8 @@
 		reg = <0x76>;
 	};
 };
+
+&wifi {
+	status = "okay";
+};
+
