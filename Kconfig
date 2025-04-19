@@ -6,4 +6,20 @@ config WIFI_PASSWORD
     string "Wi-Fi Password"
     default "YourPassword"
 
+config MQTT_HOST
+    string "MQTT Broker Host"
+    default ""
+
+config MQTT_PORT
+    int "MQTT PORT"
+    default 1884
+
+config MQTT_USERNAME
+    string ""
+    default ""
+
+config MQTT_PASSWORD
+    string ""
+    default ""
+
 source "Kconfig.zephyr"

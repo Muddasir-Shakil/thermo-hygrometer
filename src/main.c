@@ -25,13 +25,15 @@ LOG_MODULE_REGISTER(app);
 
 #define WIFI_SSID CONFIG_WIFI_SSID
 #define WIFI_PASSWORD CONFIG_WIFI_PASSWORD
+#define MQTT_HOST CONFIG_MQTT_HOST
+#define MQTT_USERNAME CONFIG_MQTT_PASSWORD
+#define MQTT_PASSWORD CONFIG_MQTT_PASSWORD
 // /* The mqtt client struct */
-// static APP_BMEM struct mqtt_client client_ctx;
-
+static struct mqtt_client client_ctx;
 int main(void)
 {   
 	const struct device *display_dev;
-	struct mqtt_client client_ctx;
+	// struct mqtt_client client_ctx;
 	lv_obj_t *bme280_data_label;
 
 	display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
@@ -51,13 +53,12 @@ int main(void)
 		return -1;
     }
 
-	// start http server, user can configure
-	// check if SSID and password is set
 	wifi_connect(WIFI_SSID, WIFI_PASSWORD);
 	start_publisher(&client_ctx);
 	char data_str[100] = {0};
 	char temperature_str[100] = {0};
 	char humidity_str[100] = {0}; 
+	
 	while (1) {
 		struct bme280_data data;
 		if(get_bme280_data(&data) == -1)

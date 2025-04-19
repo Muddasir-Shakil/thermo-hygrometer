@@ -21,10 +21,10 @@
 #define SERVER_ADDR		"2001:db8::2"
 #else
 #define ZEPHYR_ADDR		"192.168.2.106"
-#define SERVER_ADDR		"192.168.2.106"
+#define SERVER_ADDR		CONFIG_MQTT_HOST
 #endif
 #endif
-#define SERVER_PORT		1883
+#define SERVER_PORT		CONFIG_MQTT_PORT
 
 #define APP_CONNECT_TIMEOUT_MS	2000
 #define APP_SLEEP_MSECS		1000 * 60
@@ -44,6 +44,18 @@
 #define BLUEMIX_DEVID		"carbon"
 #define BLUEMIX_EVENT		"status"
 #define BLUEMIX_FORMAT		"json"
+#endif
+
+#ifdef CONFIG_MQTT_USERNAME
+#define USERNAME        CONFIG_MQTT_USERNAME
+#else
+#define USERNAME        NULL
+#endif
+
+#ifdef CONFIG_MQTT_PASSWORD
+#define PASSWORD        CONFIG_MQTT_PASSWORD
+#else
+#define PASSWORD        NULL
 #endif
 
 #endif

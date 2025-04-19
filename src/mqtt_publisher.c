@@ -17,11 +17,11 @@ LOG_MODULE_REGISTER(mqtt_publisher, LOG_LEVEL_DBG);
 #define CONFIG_NET_SAMPLE_APP_MAX_CONNECTIONS 3
 
 /* Buffers for MQTT client. */
-static APP_BMEM uint8_t rx_buffer[APP_MQTT_BUFFER_SIZE];
-static APP_BMEM uint8_t tx_buffer[APP_MQTT_BUFFER_SIZE];
+static uint8_t rx_buffer[128];
+static uint8_t tx_buffer[128];
 
 // /* The mqtt client struct */
-// static APP_BMEM struct mqtt_client client_ctx;
+static struct mqtt_client client_ctx;
 
 /* MQTT Broker details. */
 static APP_BMEM struct sockaddr_storage broker;
@@ -201,18 +201,24 @@ static void client_init(struct mqtt_client *client)
 	/* MQTT client configuration */
 	client->broker = &broker;
 	client->evt_cb = mqtt_evt_handler;
+
+	
 	client->client_id.utf8 = (uint8_t *)MQTT_CLIENTID;
 	client->client_id.size = strlen(MQTT_CLIENTID);
-	client->password = NULL;
-	client->user_name = NULL;
+	client->password = PASSWORD;
+	client->user_name = USERNAME;
 	client->protocol_version = MQTT_VERSION_3_1_1;
 
 	/* MQTT buffers configuration */
+	if (rx_buffer == NULL)
+	{
+		LOG_ERR("Failed to Allocate rx_Buffer");
+	}
+	
 	client->rx_buf = rx_buffer;
 	client->rx_buf_size = sizeof(rx_buffer);
 	client->tx_buf = tx_buffer;
 	client->tx_buf_size = sizeof(tx_buffer);
-
 	/* MQTT transport configuration */
 	client->transport.type = MQTT_TRANSPORT_NON_SECURE;
 }
@@ -222,10 +228,21 @@ static int try_to_connect(struct mqtt_client *client)
 {
 	int rc, i = 0;
 
+	client_init(client);
+	
+	if(client->tx_buf == NULL)
+		PRINT_RESULT("client->tx_buf == NULL", rc);
+	
+	if(client-->rx_buffer == NULL)
+		LOG_ERR("client->rx_buf == NULL  rx_buf_size %d %d", client->rx_buf_size, client->tx_buf_size);
+	
+	if(client->client_id.utf8 == NULL)
+		LOG_ERR("client->client_id.utf8 == NULL");
+
+	
+	LOG_ERR("After Buffers assigned: rx_buf=%p tx_buf=%p", client->rx_buf, client->tx_buf);
 	while (i++ < APP_CONNECT_TRIES && !connected) {
-
-		client_init(client);
-
+		
 		rc = mqtt_connect(client);
 		if (rc != 0) {
 			PRINT_RESULT("mqtt_connect", rc);
@@ -341,7 +358,7 @@ int start_publisher(struct mqtt_client *client)
 {
 	int i, rc, r = 0;
 	LOG_INF("attempting to connect: ");
-	rc = try_to_connect(client);
+	rc = try_to_connect(&client_ctx);
 	PRINT_RESULT("try_to_connect", rc);
 	SUCCESS_OR_EXIT(rc);
 }
