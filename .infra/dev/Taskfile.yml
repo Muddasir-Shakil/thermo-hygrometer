@@ -1,0 +1,14 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  broker-start:
+    preconditions:
+      - test -f '{{.USER_WORKING_DIR}}/.infra/dev/broker-compose.yaml'
+    cmds:
+      - echo {{.USER_WORKING_DIR}}
+      - docker-compose -f {{.USER_WORKING_DIR}}/.infra/dev/broker-compose.yaml up -d
+  broker-stop:
+    cmds:
+      - docker stop mosquitto
