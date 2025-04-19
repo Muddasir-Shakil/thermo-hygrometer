@@ -5,3 +5,6 @@ modules
 zephyr
 bootloader
 tools
+mosquitto/data/
+mosquitto/log/
+
