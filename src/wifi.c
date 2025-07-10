@@ -67,8 +67,11 @@ void wifi_connect(const char* ssid, const char* password)
 		.psk_length = 0,
 		.channel = 0,
 		.security = WIFI_SECURITY_TYPE_PSK,
+		.bssid = {0xE0, 0x28, 0x6D, 0xF5, 0x04, 0x05},
 	};
 
+	
+	// .band = WIFI_FREQ_BAND_2_4_GHZ,
 	cnx_params.ssid_length = strlen(ssid);
 	cnx_params.psk_length = strlen(password);
 

@@ -32,6 +32,7 @@ LOG_MODULE_REGISTER(app);
 static struct mqtt_client client_ctx;
 int main(void)
 {   
+#ifdef DISPLAY_ON
 	const struct device *display_dev;
 	// struct mqtt_client client_ctx;
 	lv_obj_t *bme280_data_label;
@@ -46,10 +47,9 @@ int main(void)
 	lv_obj_align(bme280_data_label, LV_ALIGN_CENTER, 0, 0);
  	lv_task_handler();	
  	display_blanking_off(display_dev);
-
+#endif
 	if (check_bme280_device() == NULL)
     {	
-        lv_label_set_text(bme280_data_label, "Device Error!");
 		return -1;
     }
 
@@ -61,17 +61,25 @@ int main(void)
 	
 	while (1) {
 		struct bme280_data data;
-		if(get_bme280_data(&data) == -1)
+		if(get_bme280_data(&data) == -1){
+#ifdef DISPLAY_ON
 			lv_label_set_text(bme280_data_label, "Data Error");
-		else {
+#else
+			LOG_ERR("Data Error");
+#endif	
+		} else {
 			sprintf(temperature_str,"%.1f", data.temperature);
 			sprintf(humidity_str,"%.1f", data.humidity);
 			sprintf(data_str, "%.1f C \n%.1f %%", data.temperature, data.humidity);
+#ifdef DISPLAY_ON
 			lv_label_set_text(bme280_data_label, data_str);
+#endif
 			publish(&client_ctx, MQTT_QOS_0_AT_MOST_ONCE, "Temperature", temperature_str);
 			publish(&client_ctx, MQTT_QOS_0_AT_MOST_ONCE, "Humidity", humidity_str);
 		}
+#ifdef DISPLAY_ON
 		lv_task_handler();
+#endif
 		process_mqtt_and_sleep(&client_ctx);
 		k_sleep(K_MSEC(1000));
 	}

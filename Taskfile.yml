@@ -7,5 +7,10 @@ includes:
     taskfile: .infra/dev
     flatten: true
 
+tasks:
+  default:
+    cmds:
+      - task --list-all
+
 
 

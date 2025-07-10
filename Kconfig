@@ -22,4 +22,8 @@ config MQTT_PASSWORD
     string ""
     default ""
 
+
+config DISPLAY_ON
+    bool "Set the display On"
+    default n
 source "Kconfig.zephyr"
