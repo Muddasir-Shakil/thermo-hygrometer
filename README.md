@@ -68,3 +68,24 @@ west espressif -p <PORT> -b 115200 -e app/build/zephyr/zephyr.elf monitor
 ```
 
 Exit the Espressif monitor with `Ctrl-]`.
+
+## Learning roadmap
+
+- [ ] Show Wi-Fi and MQTT connection status on the display.
+- [ ] Track minimum and maximum temperature and humidity.
+- [ ] Add comfort states such as dry, comfortable, and humid.
+- [ ] Add multiple LVGL screens and a small history graph.
+- [ ] Split sensor, display, and MQTT work into separate Zephyr threads.
+- [ ] Pass sensor readings between threads with a Zephyr message queue.
+- [ ] Reconnect automatically after Wi-Fi or MQTT connection loss.
+- [ ] Publish retained status and MQTT Last Will messages.
+- [ ] Publish sensor readings as structured JSON.
+- [ ] Subscribe to MQTT commands for display mode and sampling interval.
+- [ ] Store runtime thresholds and intervals with Zephyr Settings/NVS.
+- [ ] Add a devicetree-configured status LED and interrupt-driven button.
+- [ ] Add high-temperature and high-humidity alarms.
+- [ ] Blank the display when idle and experiment with ESP32 sleep modes.
+- [ ] Add a hardware watchdog and subsystem error counters.
+- [ ] Reduce memory usage by disabling unused shell, debug, and LVGL features.
+- [ ] Add MQTT over TLS after reducing the current DRAM footprint.
+- [ ] Add Ztest coverage for thresholds, payload formatting, and error handling.
