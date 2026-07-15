@@ -229,7 +229,7 @@ static int try_to_connect(struct mqtt_client *client)
 		rc = mqtt_connect(client);
 		if (rc != 0) {
 			PRINT_RESULT("mqtt_connect", rc);
-			k_sleep(K_MSEC(APP_SLEEP_MSECS));
+			k_sleep(K_MSEC(APP_RECONNECT_DELAY_MS));
 			continue;
 		}
 
@@ -255,7 +255,7 @@ int process_mqtt_and_sleep(struct mqtt_client *client)
 {
 	if (!client)
 		return -1;
-	int timeout = APP_SLEEP_MSECS;
+	int timeout = APP_MQTT_POLL_TIMEOUT_MS;
 	int64_t remaining = timeout;
 	int64_t start_time = k_uptime_get();
 	int rc;
@@ -339,10 +339,11 @@ int process_mqtt_and_sleep(struct mqtt_client *client)
 
 int start_publisher(struct mqtt_client *client)
 {
-	int i, rc, r = 0;
-	LOG_INF("attempting to connect: ");
+	int rc;
+	LOG_INF("attempting to connect to %s:%d", SERVER_ADDR, SERVER_PORT);
 	rc = try_to_connect(client);
 	PRINT_RESULT("try_to_connect", rc);
 	SUCCESS_OR_EXIT(rc);
-}
 
+	return 0;
+}

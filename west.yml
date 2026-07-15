@@ -1,6 +1,5 @@
 manifest:
   self:
-    west-commands: scripts/west-commands.yml
     path: app
 
   remotes:
@@ -10,10 +9,12 @@ manifest:
   projects:
     - name: zephyr
       remote: zephyrproject-rtos
-      revision: main
+      revision: v3.7.0
       import:
         path-prefix: deps
         name-allowlist:
           - zephyr
           - cmsis
           - hal_espressif
+          - lvgl
+          - mbedtls
